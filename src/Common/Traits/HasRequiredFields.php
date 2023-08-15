@@ -3,7 +3,6 @@
 namespace VendorName\Skeleton\Common\Traits;
 
 use Exception;
-use VendorName\Skeleton\Exceptions\MissingPaymentInfoException;
 
 trait HasRequiredFields
 {
@@ -29,7 +28,7 @@ trait HasRequiredFields
         $missing_fields = $this->getMissingFields($fields);
 
         if (count($missing_fields) > 0) {
-            throw new MissingPaymentInfoException("Missing required fields: ".implode(",", $missing_fields));
+            throw new Exception("Missing required fields: ".implode(",", $missing_fields));
         }
     }
 }

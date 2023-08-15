@@ -6,7 +6,8 @@ use VendorName\Skeleton\Common\Contracts\RequiredFields;
 use VendorName\Skeleton\Common\Traits\HasHandelRedirects;
 use VendorName\Skeleton\Common\Traits\HasRequiredFields;
 
-class Skeleton implements RequiredFields {
+class Skeleton implements RequiredFields
+{
     use HasRequiredFields;
     use HasHandelRedirects;
 
@@ -15,7 +16,7 @@ class Skeleton implements RequiredFields {
         $this->handelRedirects();
     }
 
-    function requiredFields(): array
+    public function requiredFields(): array
     {
         return [];
     }

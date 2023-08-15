@@ -153,9 +153,9 @@ $usernameGuess = basename($usernameGuess);
 $authorUsername = ask('Author username', $usernameGuess);
 
 // Don't change these values
-$vendorName = "laravel-pay";
+$vendorName = 'laravel-pay';
 $vendorSlug = slugify($vendorName);
-$vendorNamespace = "LaravelPay";
+$vendorNamespace = 'LaravelPay';
 
 $currentDirectory = getcwd();
 $folderName = basename($currentDirectory);
@@ -208,7 +208,7 @@ foreach ($files as $file) {
         ':vendor_name' => $vendorName,
         ':vendor_slug' => $vendorSlug,
         'VendorName' => $vendorNamespace,
-        ":env_key" => $env_package_key,
+        ':env_key' => $env_package_key,
         ':package_name' => $packageName,
         ':package_slug' => $packageSlug,
         ':package_slug_without_prefix' => $packageSlugWithoutPrefix,
