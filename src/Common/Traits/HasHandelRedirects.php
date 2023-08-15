@@ -7,21 +7,39 @@ trait HasHandelRedirects
     protected $success_url;
     protected $fail_url;
 
-    private function handleRedirects()
+    public function setSuccessUrl($url) : self
     {
-        $success_url = config("payment-:package_slug_without_prefix.success_url");
-        $fail_url =  config("payment-:package_slug_without_prefix.fail_url");
+        $this->success_url = $url;
+        $this->convertSuccessToFullUrl();
+        return $this;
+    }
 
-        if ($success_url && !filter_var($success_url, FILTER_VALIDATE_URL)) {
-            $this->success_url = url($success_url);
-        } else {
-            $this->success_url = $success_url;
+    public function setFailUrl($url) : self
+    {
+        $this->fail_url = $url;
+        $this->convertFailToFullUrl();
+        return $this;
+    }
+
+    public function handelRedirects()
+    {
+        $this->success_url = config("payment-:package_slug_without_prefix.success_url");
+        $this->fail_url =  config("payment-:package_slug_without_prefix.fail_url");
+
+        $this->convertSuccessToFullUrl();
+        $this->convertFailToFullUrl();
+    }
+
+
+    private function convertSuccessToFullUrl(){
+        if ($this->success_url && !filter_var($this->success_url, FILTER_VALIDATE_URL)) {
+            $this->success_url = url($this->success_url);
         }
+    }
 
-        if ($fail_url && !filter_var($fail_url, FILTER_VALIDATE_URL)) {
-            $this->fail_url = url($fail_url);
-        } else {
-            $this->fail_url = $fail_url;
+    private function convertFailToFullUrl(){
+        if ($this->fail_url && !filter_var($this->fail_url, FILTER_VALIDATE_URL)) {
+            $this->fail_url = url($this->fail_url);
         }
     }
 }
