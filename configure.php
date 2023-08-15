@@ -178,11 +178,14 @@ if (! confirm('Modify files?', true)) {
 
 $files = (str_starts_with(strtoupper(PHP_OS), 'WIN') ? replaceForWindows() : replaceForAllOtherOSes());
 
+$env_package_key = strtoupper($className);
+
 foreach ($files as $file) {
     replace_in_file($file, [
         ':vendor_name' => $vendorName,
         ':vendor_slug' => $vendorSlug,
         'VendorName' => $vendorNamespace,
+        ":env_key" => $env_package_key,
         ':package_name' => $packageName,
         ':package_slug' => $packageSlug,
         ':package_slug_without_prefix' => $packageSlugWithoutPrefix,
