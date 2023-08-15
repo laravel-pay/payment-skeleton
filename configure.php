@@ -141,6 +141,17 @@ function replaceForAllOtherOSes(): array
     return explode(PHP_EOL, run('grep -E -r -l -i ":author|:vendor|:package|VendorName|skeleton|migration_table_name|vendor_name|vendor_slug|author@domain.com" --exclude-dir=vendor ./* ./.github/* | grep -v '.basename(__FILE__)));
 }
 
+$gitName = run('git config user.name');
+$authorName = ask('Author name', $gitName);
+
+$gitEmail = run('git config user.email');
+$authorEmail = ask('Author email', $gitEmail);
+
+$usernameGuess = explode(':', run('git config remote.origin.url'))[1];
+$usernameGuess = dirname($usernameGuess);
+$usernameGuess = basename($usernameGuess);
+$authorUsername = ask('Author username', $usernameGuess);
+
 // Don't change these values
 $vendorName = "laravel-pay";
 $vendorSlug = slugify($vendorName);
@@ -158,16 +169,25 @@ $className = ask('Class name', $className);
 $variableName = lcfirst($className);
 $description = ask('Package description', "This is my package {$packageSlug}");
 
+$usePhpStan = confirm('Enable PhpStan?', true);
+$useLaravelPint = confirm('Enable Laravel Pint?', true);
+$useDependabot = confirm('Enable Dependabot?', true);
 $useLaravelRay = confirm('Use Ray for debugging?', true);
+$useUpdateChangelogWorkflow = confirm('Use automatic changelog updater workflow?', true);
 
 writeln('------');
+writeln("Author     : {$authorName} ({$authorUsername}, {$authorEmail})");
 writeln("Vendor     : {$vendorName} ({$vendorSlug})");
 writeln("Package    : {$packageSlug} <{$description}>");
 writeln("Namespace  : {$vendorNamespace}\\{$className}");
 writeln("Class name : {$className}");
 writeln('---');
 writeln('Packages & Utilities');
+writeln('Use Laravel/Pint       : '.($useLaravelPint ? 'yes' : 'no'));
+writeln('Use Larastan/PhpStan : '.($usePhpStan ? 'yes' : 'no'));
+writeln('Use Dependabot       : '.($useDependabot ? 'yes' : 'no'));
 writeln('Use Ray App          : '.($useLaravelRay ? 'yes' : 'no'));
+writeln('Use Auto-Changelog   : '.($useUpdateChangelogWorkflow ? 'yes' : 'no'));
 writeln('------');
 
 writeln('This script will replace the above values in all relevant files in the project directory.');
@@ -182,6 +202,9 @@ $env_package_key = strtoupper($className);
 
 foreach ($files as $file) {
     replace_in_file($file, [
+        ':author_name' => $authorName,
+        ':author_username' => $authorUsername,
+        'author@domain.com' => $authorEmail,
         ':vendor_name' => $vendorName,
         ':vendor_slug' => $vendorSlug,
         'VendorName' => $vendorNamespace,
@@ -207,10 +230,37 @@ foreach ($files as $file) {
         default => [],
     };
 }
+if (! $useLaravelPint) {
+    safeUnlink(__DIR__.'/.github/workflows/fix-php-code-style-issues.yml');
+    safeUnlink(__DIR__.'/pint.json');
+}
 
+if (! $usePhpStan) {
+    safeUnlink(__DIR__.'/phpstan.neon.dist');
+    safeUnlink(__DIR__.'/phpstan-baseline.neon');
+    safeUnlink(__DIR__.'/.github/workflows/phpstan.yml');
+
+    remove_composer_deps([
+        'phpstan/extension-installer',
+        'phpstan/phpstan-deprecation-rules',
+        'phpstan/phpstan-phpunit',
+        'nunomaduro/larastan',
+    ]);
+
+    remove_composer_script('phpstan');
+}
+
+if (! $useDependabot) {
+    safeUnlink(__DIR__.'/.github/dependabot.yml');
+    safeUnlink(__DIR__.'/.github/workflows/dependabot-auto-merge.yml');
+}
 
 if (! $useLaravelRay) {
     remove_composer_deps(['spatie/laravel-ray']);
+}
+
+if (! $useUpdateChangelogWorkflow) {
+    safeUnlink(__DIR__.'/.github/workflows/update-changelog.yml');
 }
 
 confirm('Execute `composer install` and run tests?') && run('composer install && composer test');
