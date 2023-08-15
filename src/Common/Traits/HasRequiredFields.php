@@ -6,7 +6,7 @@ use Exception;
 
 trait HasRequiredFields
 {
-    abstract function requiredFields(): array;
+    abstract public function requiredFields(): array;
 
     private function getMissingFields($fields): array
     {
@@ -28,7 +28,7 @@ trait HasRequiredFields
         $missing_fields = $this->getMissingFields($fields);
 
         if (count($missing_fields) > 0) {
-            throw new Exception("Missing required fields: ".implode(",", $missing_fields));
+            throw new Exception('Missing required fields: '.implode(',', $missing_fields));
         }
     }
 }

@@ -8,6 +8,6 @@ class MissingPaymentInfoException extends Exception
 {
     public function __construct($missing_payment_parameter)
     {
-        parent::__construct($missing_payment_parameter . ' is required');
+        parent::__construct($missing_payment_parameter.' is required');
     }
 }
