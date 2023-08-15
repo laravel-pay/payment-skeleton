@@ -10,8 +10,8 @@
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "laravel-pay",
+            "email": "laravel_pay_4all@gmail.com",
             "role": "Developer"
         }
     ],
