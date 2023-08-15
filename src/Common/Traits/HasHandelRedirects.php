@@ -23,8 +23,8 @@ trait HasHandelRedirects
 
     public function handelRedirects()
     {
-        $this->success_url = config("payment-:package_slug_without_prefix.success_url");
-        $this->fail_url =  config("payment-:package_slug_without_prefix.fail_url");
+        $this->success_url = config("payment-:package_slug.success_url");
+        $this->fail_url =  config("payment-:package_slug.fail_url");
 
         $this->convertSuccessToFullUrl();
         $this->convertFailToFullUrl();
