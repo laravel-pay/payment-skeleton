@@ -20,6 +20,7 @@ class SkeletonServiceProvider extends PackageServiceProvider
             ->hasConfigFile("payment-:package_slug")
             ->hasViews()
             ->hasMigration('create_skeleton_table')
+            ->hasTranslations()
             ->hasCommand(SkeletonCommand::class);
     }
 }
